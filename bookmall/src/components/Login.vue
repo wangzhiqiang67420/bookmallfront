@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import storage from '@/libs/storage';
 export default {
   name: 'Login',
   data () {
@@ -33,17 +34,18 @@ export default {
         username: 'zdd',
         password: '123'
       },
+      username:''
     }
   },
   methods: {
+  
     login() {
-      console.log("触发登陆方法");
-      console.log(this.form.username);
-      console.log(this.form.password);
       let username = this.form.username;
       let password = this.form.password;    
-      this.$axios.get("/user/login",{params: {username: username,password: password}}).then(res=>{
+      this.$axios.get("/user/loginnew",{params: {username: username,password: password}}).then(res=>{
         if(res.data.status !== '0'){
+            storage.set("user",res.data.user);
+            console.log(storage.get("user"));
             this.$router.push({
               path: res.data.msg
             })

@@ -34,12 +34,48 @@
 
 <div style="height: 3px; background-color: #ff2832;"></div>
 <el-row style="width:100%">
-  
+  <el-col :span="4"><div class="grid-content"></div></el-col>
+  <el-col :span="4"></el-col>
+  <el-col :span="8">
+      <div class="grid-content" style="line-height:80px;text-align:right">
+      新用户注册/企业用户注册
+      </div>
+  </el-col>
+  <el-col :span="8">
+      <div class="grid-content" style="line-height:80px;text-align:left"></div>
+  </el-col>
 </el-row>
-
-
-
-
+<el-row style="width:100%">
+    <div class="login-container">
+          <el-form class="login-form" :rules="rules" :model="form" ref="form" label-width="80px" label-color="#fff">
+              <el-form-item prop="username">
+                  <span slot="label">用户名称</span>
+                  <el-input v-model="form.username"></el-input>
+              </el-form-item>
+              <el-form-item prop="password">
+                  <span slot="label">登陆密码</span>
+                  <el-input type="password" v-model="form.password"></el-input>
+              </el-form-item>
+              <el-form-item prop="checkPassword">
+                  <span slot="label">确认密码</span>
+                  <el-input type="password" v-model="form.checkPassword"></el-input>
+              </el-form-item>
+              <el-form-item prop="email">
+                  <span slot="label">邮箱地址</span>
+                  <el-input v-model="form.email"></el-input>
+              </el-form-item>
+              <el-form-item prop="identity">
+                  <span slot="label"></span>
+                  <el-radio v-model="form.identity" label="ordinary">普通用户</el-radio>
+                  <el-radio v-model="form.identity" label="business">企业用户</el-radio>
+              </el-form-item>
+                
+              <el-form-item label="">
+                  <el-button type="primary" plain @click.native.prevent="checkPass">注册</el-button>
+              </el-form-item>
+          </el-form>
+    </div>  
+</el-row>
 
 
 </div>
@@ -47,22 +83,77 @@
 
 <script>
 export default {
-  name: 'Login',
+  name: 'Register',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
       form: {
-        name: '',
-        password: ''
+        username: '',
+        password: '',
+        checkPassword: '',
+        identity:'ordinary'
       },
+      rules: {
+        username: [{ required: true, message: '请输入用户名称', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入用户密码', trigger: 'blur' }],
+        checkPassword: [{ required: true, message: '请确认用户密码', trigger: 'blur' }]
+      }
     }
   },
   methods: {
     toLogin(){
         this.$router.push({
-              path: 'login'
+            path: 'login'
         })
+    },
+
+    sleep(numberMillis) {
+      var now = new Date();
+      var exitTime = now.getTime() + numberMillis;
+      while (true) {
+          now = new Date();
+          if (now.getTime() > exitTime)
+          return;
+      }
+    },
+    checkPass(){
+        if(this.form.password == this.form.checkPassword){
+            this.registerSubmit();
+        }else{
+            this.$message.error("确认密码不一致");
+        }
+    },
+
+    registerSubmit(){
+        this.$refs.form.validate(valid => {
+        if (valid) {
+          this.logining = true;
+          const data = {
+            username: this.form.username,
+            password: this.form.password,
+            identity: this.form.identity,
+            email: this.form.email
+          };
+          this.$axios.post("/user/register",data).then(res=>{
+              if(res.data.status !== '0'){
+                    this.$message({
+                        message: '注册成功',
+                        type: 'success'
+                    });
+                    this.$router.push({
+                        path: 'login'
+                    })
+                }else{
+                    this.$message.error(res.data.msg);
+                }
+          });
+        } else {
+          return false;
+        }
+      });
     }
+
+
+
     
   }
 }
@@ -104,74 +195,16 @@ export default {
     background-color: #5bc0de;
     border-color: #46b8da;
   }
-  .btn {
-    display: inline-block;
-    padding: 6px 12px;
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.42857143;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    -ms-touch-action: manipulation;
-    touch-action: manipulation;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    background-image: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
-  }
-.glyphicon {
-    position: relative;
-    top: 1px;
-    display: inline-block;
-    font-family: 'Glyphicons Halflings';
-    font-style: normal;
-    font-weight: 400;
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+.login-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
 }
 
-
-
-.sidenav {
-    width: 130px;
-    z-index: 1;
-    top: 20px;
-    left: 10px;
-    background: #f2f2f2;
-    overflow-x: hidden;
-    padding: 8px 0;
-}
-
-.sidenav a {
-    padding: 6px 8px 6px 16px;
-    text-decoration: none;
-    font-size: 15px;
-    color: #2196F3;
-    display: block;
-}
-
-.sidenav a:hover {
-    color: #064579;
-}
-
-ul, ol {
-    list-style: none;
-}
-
-.product_ul li {
-    width: 150px;
-    margin-right: 30px;
-    margin-bottom: 16px;
-    height: 250px;
-    position: relative;
-    overflow: visible;
-    float: left;
+.login-form {
+  width: 614px;
 }
 </style>

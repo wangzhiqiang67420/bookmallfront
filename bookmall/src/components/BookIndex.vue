@@ -8,8 +8,11 @@
   <el-col :span="8">
       <div class="grid-content bg-purple">
         欢迎来到云香书屋&nbsp;&nbsp;&nbsp;
-        <a @click="toLogin" style="color:#337ab7;cursor:pointer">请登录</a>&nbsp;&nbsp;&nbsp;
-        <a @click="toRegister" style="color:#337ab7;cursor:pointer">免费注册</a>
+        <a v-if="user == null||user == ''||user == 'undefined'" @click="toLogin" style="color:#337ab7;cursor:pointer">请登录&nbsp;&nbsp;&nbsp;</a>
+        <span v-if="user != null&&user != ''&&user != 'undefined'">{{user.username}}&nbsp;&nbsp;&nbsp;</span>
+        <a @click="toRegister" style="color:#337ab7;cursor:pointer">免费注册</a>&nbsp;&nbsp;&nbsp;
+        <a v-if="user != null&&user != ''&&user != 'undefined'" @click="logout" style="color:#337ab7;cursor:pointer">注销</a>&nbsp;&nbsp;&nbsp;
+        <a v-if="user != null&&user != ''&&user != 'undefined'&&user.identity!='ordinary'" @click="toAdmin" style="color:#337ab7;cursor:pointer">进入后台管理页面</a>
       </div>
   </el-col>
 </el-row>
@@ -36,17 +39,16 @@
 <el-row style="width:100%">
   <el-col :span="3"><div class="grid-content"></div></el-col>
   <el-col :span="3">
-      <div class="grid-content" >
-
+      <div class="grid-content">
          <div class="sidenav" style="width:100%">
-            <a href="#about">特色书单</a>
-            <a href="#services">科技</a>
-            <a href="#clients">文学经典</a>
-            <a href="#clients">人文社科</a>
-            <a href="#clients">生活</a>
-            <a href="#clients">儿童读物</a>
-            <a href="#clients">小说</a>
-            <a href="#clients">...</a>
+            <a @click="tobookList()">特色书单</a>
+            <a @click="tobookList('2')">科技</a>
+            <a @click="tobookList('3')">文学经典</a>
+            <a @click="tobookList('4')">人文社科</a>
+            <a @click="tobookList('5')">生活</a>
+            <a @click="tobookList('6')">儿童读物</a>
+            <a @click="tobookList('7')">小说</a>
+            <a @click="tobookList()">...</a>
           </div>
       </div>
   </el-col>
@@ -97,10 +99,6 @@
   </el-col>
 </el-row>
 
-
-
-
-
 <el-row style="width:100%">
   <el-col :span="3"><div class="grid-content"></div></el-col>
   
@@ -109,147 +107,19 @@
     <div style="height:1px;background-color:#000000;margin-top:10px"></div>
 
           <ul class="product_ul">
-                    
-                  <li class="product_li">
-                      <a href="book/info/37" class="img" target="_blank">
-                          <img src="http://img3m9.ddimg.cn/11/5/23880989-1_b_2.jpg">
+                  <li class="product_li" v-for="book in books">
+                      <a :href="getHref(book)" class="img" target="_blank">
+                          <img :src="book.imageUrl">
                       </a>
                       <p class="name">
-                          <a href="book/info/37">论语（中华经典藏书・升级版）</a>
+                          <a :href="getHref(book)">{{book.name}}</a>
                       </p>
-                      <p class="author">陈晓芬 译注</p>
+                      <p class="author">{{book.author}}</p>
                       <p class="price">
-                          <span class="rob">￥12.00</span>
-                          <span class="oprice">￥18.00</span>
+                          <span class="rob">￥{{book.price}}</span>
+                          <span class="oprice">￥{{book.marketPrice}}</span>
                       </p>
                   </li>
-              
-                  <li class="product_li">
-                      <a href="book/info/38" class="img" target="_blank">
-                          <img src="http://img3m0.ddimg.cn/13/7/23855350-1_b_2.jpg">
-                      </a>
-                      <p class="name">
-                          <a href="book/info/38">大学・中庸（中华经典藏书・升级版）</a>
-                      </p>
-                      <p class="author">王国轩 译注</p>
-                      <p class="price">
-                          <span class="rob">￥8.00</span>
-                          <span class="oprice">￥12.00</span>
-                      </p>
-                  </li>
-              
-                  <li class="product_li">
-                      <a href="book/info/39" class="img" target="_blank">
-                          <img src="http://img3m2.ddimg.cn/25/23/22845562-1_b_4.jpg">
-                      </a>
-                      <p class="name">
-                          <a href="book/info/39">诗经译注</a>
-                      </p>
-                      <p class="author">程俊英 撰</p>
-                      <p class="price">
-                          <span class="rob">￥28.60</span>
-                          <span class="oprice">￥32.00</span>
-                      </p>
-                  </li>
-              
-                  <li class="product_li">
-                      <a href="book/info/40" class="img" target="_blank">
-                          <img src="http://img3m1.ddimg.cn/94/15/23786131-1_b_4.jpg">
-                      </a>
-                      <p class="name">
-                          <a href="book/info/40">诗经―中华经典藏书</a>
-                      </p>
-                      <p class="author">（春秋）孔子 编订 ; 黎波 译注</p>
-                      <p class="price">
-                          <span class="rob">￥28.70</span>
-                          <span class="oprice">￥39.80</span>
-                      </p>
-                  </li>
-              
-                  <li class="product_li">
-                      <a href="book/info/41" class="img" target="_blank">
-                          <img src="http://img3m9.ddimg.cn/92/10/23371319-1_b_2.jpg">
-                      </a>
-                      <p class="name">
-                          <a href="book/info/41">论语译注――中国古典名著译注丛书</a>
-                      </p>
-                      <p class="author">杨伯峻 译注</p>
-                      <p class="price">
-                          <span class="rob">￥18.80</span>
-                          <span class="oprice">￥26.00</span>
-                      </p>
-                  </li>
-              
-                  <li class="product_li">
-                      <a href="book/info/42" class="img" target="_blank">
-                          <img src="http://img3m4.ddimg.cn/82/33/25168654-1_b_1.jpg">
-                      </a>
-                      <p class="name">
-                          <a href="book/info/42">诗经注析（中华国学文库）</a>
-                      </p>
-                      <p class="author">程俊英，蒋见元</p>
-                      <p class="price">
-                          <span class="rob">￥41.90</span>
-                          <span class="oprice">￥58.00</span>
-                      </p>
-                  </li>
-              
-                  <li class="product_li">
-                      <a href="book/info/43" class="img" target="_blank">
-                          <img src="http://img3m1.ddimg.cn/92/19/20747621-1_b_0.jpg">
-                      </a>
-                      <p class="name">
-                          <a href="book/info/43">十三经注疏（清嘉庆刊本）全五册</a>
-                      </p>
-                      <p class="author">（清）阮元 校刻</p>
-                      <p class="price">
-                          <span class="rob">￥774.20</span>
-                          <span class="oprice">￥980.00</span>
-                      </p>
-                  </li>
-              
-                  <li class="product_li">
-                      <a href="book/info/44" class="img" target="_blank">
-                          <img src="http://img3m9.ddimg.cn/44/1/22631939-1_b_5.jpg">
-                      </a>
-                      <p class="name">
-                          <a href="book/info/44">王阳明全集（全五册）</a>
-                      </p>
-                      <p class="author">(明)王阳明</p>
-                      <p class="price">
-                          <span class="rob">￥126.80</span>
-                          <span class="oprice">￥198.00</span>
-                      </p>
-                  </li>
-              
-                  <li class="product_li">
-                      <a href="book/info/45" class="img" target="_blank">
-                          <img src="http://img3m4.ddimg.cn/6/24/20899104-1_b_2.jpg">
-                      </a>
-                      <p class="name">
-                          <a href="book/info/45">四书五经译注（套装全九册）</a>
-                      </p>
-                      <p class="author">程俊英 等撰</p>
-                      <p class="price">
-                          <span class="rob">￥241.30</span>
-                          <span class="oprice">￥298.00</span>
-                      </p>
-                  </li>
-              
-                  <li class="product_li">
-                      <a href="book/info/46" class="img" target="_blank">
-                          <img src="http://img3m0.ddimg.cn/87/30/25199250-1_b_3.jpg">
-                      </a>
-                      <p class="name">
-                          <a href="book/info/46">礼记（全2册・中华经典名著全本全注全译）</a>
-                      </p>
-                      <p class="author">胡平生，张萌 译注</p>
-                      <p class="price">
-                          <span class="rob">￥63.60</span>
-                          <span class="oprice">￥88.00</span>
-                      </p>
-                  </li>
-                    
               </ul>
 
   </div></el-col>
@@ -294,18 +164,51 @@
 </template>
 
 <script>
+import storage from '@/libs/storage';
 export default {
   name: 'Login',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
       form: {
         name: '',
         password: ''
       },
+      books:[],
+      user:storage.get("user")
     }
   },
+  created() {
+        this.getNewBooks();
+  },
   methods: {
+    toAdmin(){
+        console.log(111111111111);
+        var newPage = window.open();
+        // window.open('about:blank');
+        newPage.location.href = 'http://localhost:8088/admin/adminLogin?username=zdd&password=123';
+    },
+    logout(){
+        this.$axios.get("/user/logoutnew").then(res=>{
+            if(res.data == 'logoutnew'){
+                 storage.set("user","");
+                 this.$router.push({
+                    path: 'login'
+                 })
+
+            }
+        });
+    },
+    tobookList(cateId){
+        this.$router.push({
+            path: 'bookList',
+            query: {
+              cateId: cateId
+            }
+        })
+    },
+    getHref(book){
+        return "/book/info/"+book.bookId;
+    },
     toLogin(){
         this.$router.push({
               path: 'login'
@@ -316,7 +219,13 @@ export default {
             path: 'register'
         })
     },
-    
+    getNewBooks(){
+        this.$axios.get("/newBooks").then(res=>{
+            console.log("books------------------------");
+            console.log(res);
+            this.books = res.data;
+        });
+    }
   }
 }
 </script>
@@ -426,5 +335,47 @@ ul, ol {
     position: relative;
     overflow: visible;
     float: left;
+}
+.product_li img {
+    width: 150px;
+    display: block;
+    height: 150px;
+}
+a {
+    text-decoration: none;
+}
+.name {
+    padding: 0 20px;
+    height: 18px;
+    line-height: 18px;
+    overflow: hidden;
+}
+.author {
+    padding: 0 20px;
+    height: 24px;
+    line-height: 24px;
+    overflow: hidden;
+    color: #aaa;
+}
+.price {
+    padding-left: 20px;
+    line-height: 22px;
+    overflow: hidden;
+    font-family: "Arial";
+    font-size: 14px;
+    position: relative;
+    height: 22px;
+}
+.oprice {
+    color: #aaa;
+    text-decoration: line-through;
+    overflow: hidden;
+}
+p {
+    margin-block-start: 0em;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
 }
 </style>
