@@ -1,7 +1,7 @@
 <template>
 <div class="login-container">
 <div>
-<a @click="toBookIndex"><img src="~@/assets/logo.png" title="回到首页"></a>
+<a style="cursor:pointer" @click="toBookIndex"><img src="~@/assets/logo.png" title="回到首页"></a>
 </div>
 <div>
   <el-form class="login-form" :model="form" ref="form" label-width="80px" label-color="#fff">
@@ -38,14 +38,13 @@ export default {
     }
   },
   methods: {
-  
     login() {
       let username = this.form.username;
-      let password = this.form.password;    
+      let password = this.form.password;
       this.$axios.get("/user/loginnew",{params: {username: username,password: password}}).then(res=>{
         if(res.data.status !== '0'){
             storage.set("user",res.data.user);
-            console.log(storage.get("user"));
+            storage.set("sessionId",res.data.sessionId);
             this.$router.push({
               path: res.data.msg
             })

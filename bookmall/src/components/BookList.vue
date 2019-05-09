@@ -29,10 +29,10 @@
   <el-col :span="8"><div class="grid-content"></div></el-col>
   <el-col :span="8">
       <div class="grid-content" style="line-height:80px">
-          <button type="button" onclick="window.open('cart/items')" style="background-color: #ff2832;border-color: #ff2832" class="btn btn-info">
+          <button type="button" @click="toShoppingCart" style="background-color: #ff2832;border-color: #ff2832" class="btn btn-info">
                 <span class="glyphicon glyphicon-shopping-cart"></span>
                 我的购物车
-            </button>
+          </button>
       </div>
   </el-col>
 </el-row>
@@ -40,16 +40,16 @@
 <div style="height: 3px; background-color: #ff2832;"></div>
 <el-row style="width:100%">
   <el-col :span="3"><div class="grid-content"></div></el-col>
-  <el-col :span="21">
+  <el-col :span="15">
     <div class="grid-content">
         <div style="height:1px;background-color:#ffffff;margin-top:10px"></div>
             <ul class="shoplist_ul">
                     <li v-for="bookInfo in books">
-                        <a :href="getHref(bookInfo)" target="_blank" :title="bookInfo.outline">
-                            <img :src="bookInfo.imageUrl" :alt="bookInfo.outline" width="200px" height="200px">
+                        <a @click="toBookInfo(bookInfo.bookId)" :title="bookInfo.outline">
+                            <img :src="checkUrl(bookInfo.imageUrl)" :alt="bookInfo.outline" width="200px" height="200px">
                         </a>
                         <p class="name">
-                            <a :href="getHref(bookInfo)" :title="bookInfo.outline" target="_blank">
+                            <a @click="toBookInfo(bookInfo.bookId)" target="_blank">
                                     {{bookInfo.outline }}
                             </a>
                         </p>
@@ -60,9 +60,9 @@
                             <span class="search_discount">&nbsp;({{bookInfo.discount}}折) </span>
                         </p>
                         <p class="search_book_author">
-                            <span><a href="" :title="bookInfo.author">{{bookInfo.author}}</a> 著</span>
+                            <span><a :title="bookInfo.author">{{bookInfo.author}}</a> 著</span>
                             <span> {{bookInfo.publishDate}}</span>
-                            <span>  /<a href="" :title="bookInfo.press">{{bookInfo.press}}</a></span>
+                            <span>  /<a :title="bookInfo.press">{{bookInfo.press}}</a></span>
                         </p>
                         <p class="detail">
                                 {{bookInfo.detail}}
@@ -78,6 +78,36 @@
             </ul>
 
     </div>
+  </el-col>
+  <el-col :span="6">
+      <div class="grid-content">
+      <div style="margin-left:20px">
+          <div>
+          图书推荐
+          </div>
+          <div style="height:1px;background-color:#000000;margin-top:2px"></div>
+          <div>
+            追风筝的人
+            <br />
+            冰与火之歌1
+            <br />
+            冰与火之歌2
+            <br />
+            冰与火之歌3
+          </div>
+          <div>你坏</div>
+          <br />
+          <div>
+          个性化聚类
+          </div>
+          <div style="height:1px;background-color:#000000;margin-top:2px"></div>
+          <div>
+            1...
+            <br />
+            2...
+          </div>
+      </div>
+      </div>
   </el-col>
 </el-row>
 
@@ -103,8 +133,28 @@ export default {
         this.getCategoryBooks();
   },
   methods: {
+    checkUrl(url){
+        if(url.indexOf("http") >= 0){
+            return url;
+        }else if(url.indexOf("upload") >= 0){
+            return "http://localhost:8088/"+url;
+        }
+    },
+    toBookInfo(bookId){
+        this.$router.push({
+            path: 'bookDetail',
+            query: {
+              bookId: bookId
+            }
+        })
+    },
+    toShoppingCart(){
+        this.$router.push({
+            path: 'shoppingCart'
+        })
+    },
     addCart(bookId){
-        this.$axios.get("/cart/addition",{params: {bookId: bookId,buyNum: 1}}).then(res=>{
+        this.$axios.get("/cart/addition",{params: {bookId: bookId,buyNum: 1},withCredentials:true}).then(res=>{
             this.$router.push({
                 path: 'shoppingCart'
             })
@@ -141,8 +191,6 @@ export default {
     },
     getCategoryBooks(){
         this.$axios.get("/index/category/"+this.cateId).then(res=>{
-            console.log("books------------------------");
-            console.log(res);
             this.books = res.data;
         });
     }

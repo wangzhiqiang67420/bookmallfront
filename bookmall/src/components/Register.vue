@@ -8,8 +8,11 @@
   <el-col :span="8">
       <div class="grid-content bg-purple">
         欢迎来到云香书屋&nbsp;&nbsp;&nbsp;
-        <a @click="toLogin" style="color:#337ab7;cursor:pointer">请登录</a>&nbsp;&nbsp;&nbsp;
-        <a @click="toLogin" style="color:#337ab7;cursor:pointer">免费注册</a>
+        <a  v-if="user == null||user == ''||user == 'undefined'" @click="toLogin" style="color:#337ab7;cursor:pointer">请登录&nbsp;&nbsp;&nbsp;</a>
+        <span v-if="user != null&&user != ''&&user != 'undefined'">{{user.username}}&nbsp;&nbsp;&nbsp;</span>
+        <a @click="toRegister" style="color:#337ab7;cursor:pointer">免费注册</a>&nbsp;&nbsp;&nbsp;
+        <a v-if="user != null&&user != ''&&user != 'undefined'" @click="logout" style="color:#337ab7;cursor:pointer">注销</a>&nbsp;&nbsp;&nbsp;
+        <a v-if="user != null&&user != ''&&user != 'undefined'&&user.identity!='ordinary'" @click="toAdmin" style="color:#337ab7;cursor:pointer">进入后台管理页面</a>
       </div>
   </el-col>
 </el-row>
@@ -18,16 +21,18 @@
   <el-col :span="4"><div class="grid-content"></div></el-col>
   <el-col :span="4">
       <div class="grid-content">
-         <img style="width:130px" src="~@/assets/book1.jpg" title="回到首页" />
+         <router-link :to="{path: 'bookIndex'}" exact>
+            <img style="width:130px" src="~@/assets/book1.jpg" title="回到首页" />
+         </router-link>
       </div>
   </el-col>
   <el-col :span="8"><div class="grid-content"></div></el-col>
   <el-col :span="8">
       <div class="grid-content" style="line-height:80px">
-          <button type="button" onclick="window.open('cart/items')" style="background-color: #ff2832;border-color: #ff2832" class="btn btn-info">
+          <button type="button" @click="toShoppingCart" style="background-color: #ff2832;border-color: #ff2832" class="btn btn-info">
                 <span class="glyphicon glyphicon-shopping-cart"></span>
                 我的购物车
-            </button>
+          </button>
       </div>
   </el-col>
 </el-row>
@@ -82,6 +87,7 @@
 </template>
 
 <script>
+import storage from '@/libs/storage';
 export default {
   name: 'Register',
   data () {
@@ -96,25 +102,38 @@ export default {
         username: [{ required: true, message: '请输入用户名称', trigger: 'blur' }],
         password: [{ required: true, message: '请输入用户密码', trigger: 'blur' }],
         checkPassword: [{ required: true, message: '请确认用户密码', trigger: 'blur' }]
-      }
+      },
+      user:storage.get("user")
     }
   },
   methods: {
+    logout(){
+        this.$axios.get("/user/logoutnew").then(res=>{
+            if(res.data == 'logoutnew'){
+                 storage.set("user","");
+                 this.$router.push({
+                    path: 'login'
+                 })
+
+            }
+        });
+    },
+    toShoppingCart(){
+        this.$router.push({
+            path: 'shoppingCart'
+        })
+    },
+    toAdmin(){
+        var newPage = window.open();
+        // window.open('about:blank');
+        newPage.location.href = 'http://localhost:8088/admin/adminLogin?username=zdd&password=123';
+    },
     toLogin(){
         this.$router.push({
             path: 'login'
         })
     },
 
-    sleep(numberMillis) {
-      var now = new Date();
-      var exitTime = now.getTime() + numberMillis;
-      while (true) {
-          now = new Date();
-          if (now.getTime() > exitTime)
-          return;
-      }
-    },
     checkPass(){
         if(this.form.password == this.form.checkPassword){
             this.registerSubmit();
@@ -150,11 +169,7 @@ export default {
           return false;
         }
       });
-    }
-
-
-
-    
+    }   
   }
 }
 </script>

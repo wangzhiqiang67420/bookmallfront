@@ -27,7 +27,7 @@
   <el-col :span="8"><div class="grid-content"></div></el-col>
   <el-col :span="8">
       <div class="grid-content" style="line-height:80px">
-          <button type="button" onclick="window.open('cart/items')" style="background-color: #ff2832;border-color: #ff2832" class="btn btn-info">
+          <button type="button" @click="toShoppingCart" style="background-color: #ff2832;border-color: #ff2832" class="btn btn-info">
                 <span class="glyphicon glyphicon-shopping-cart"></span>
                 我的购物车
             </button>
@@ -41,14 +41,12 @@
   <el-col :span="3">
       <div class="grid-content">
          <div class="sidenav" style="width:100%">
-            <a @click="tobookList()">特色书单</a>
-            <a @click="tobookList('2')">科技</a>
-            <a @click="tobookList('3')">文学经典</a>
-            <a @click="tobookList('4')">人文社科</a>
-            <a @click="tobookList('5')">生活</a>
-            <a @click="tobookList('6')">儿童读物</a>
-            <a @click="tobookList('7')">小说</a>
-            <a @click="tobookList()">...</a>
+            <a style="cursor:pointer" @click="tobookList('7')">特色书单</a>
+            <a style="cursor:pointer" @click="tobookList('2')">科技</a>
+            <a style="cursor:pointer" @click="tobookList('3')">文学经典</a>
+            <a style="cursor:pointer" @click="tobookList('4')">人文社科</a>
+            <a style="cursor:pointer" @click="tobookList('5')">生活</a>
+            <a style="cursor:pointer" @click="tobookList('6')">儿童读物</a>
           </div>
       </div>
   </el-col>
@@ -108,11 +106,11 @@
 
           <ul class="product_ul">
                   <li class="product_li" v-for="book in books">
-                      <a :href="getHref(book)" class="img" target="_blank">
-                          <img :src="book.imageUrl">
+                      <a style="cursor:pointer" @click="toBookInfo(book.bookId)" class="img" target="_blank">
+                          <img :src="checkUrl(book.imageUrl)">
                       </a>
                       <p class="name">
-                          <a :href="getHref(book)">{{book.name}}</a>
+                          <a style="cursor:pointer" @click="toBookInfo(book.bookId)">{{book.name}}</a>
                       </p>
                       <p class="author">{{book.author}}</p>
                       <p class="price">
@@ -181,6 +179,18 @@ export default {
         this.getNewBooks();
   },
   methods: {
+    checkUrl(url){
+        if(url.indexOf("http") >= 0){
+            return url;
+        }else if(url.indexOf("upload") >= 0){
+            return "http://localhost:8088/"+url;
+        }
+    },
+    toShoppingCart(){
+        this.$router.push({
+            path: 'shoppingCart'
+        })
+    },
     toAdmin(){
         console.log(111111111111);
         var newPage = window.open();
@@ -194,7 +204,6 @@ export default {
                  this.$router.push({
                     path: 'login'
                  })
-
             }
         });
     },
@@ -203,6 +212,14 @@ export default {
             path: 'bookList',
             query: {
               cateId: cateId
+            }
+        })
+    },
+    toBookInfo(bookId){
+        this.$router.push({
+            path: 'bookDetail',
+            query: {
+              bookId: bookId
             }
         })
     },
@@ -221,8 +238,6 @@ export default {
     },
     getNewBooks(){
         this.$axios.get("/newBooks").then(res=>{
-            console.log("books------------------------");
-            console.log(res);
             this.books = res.data;
         });
     }

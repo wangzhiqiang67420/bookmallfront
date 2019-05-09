@@ -8,7 +8,7 @@
   <el-col :span="8">
       <div class="grid-content bg-purple">
         欢迎来到云香书屋&nbsp;&nbsp;&nbsp;
-        <a v-if="user == null||user == ''||user == 'undefined'" @click="toLogin" style="color:#337ab7;cursor:pointer">请登录&nbsp;&nbsp;&nbsp;</a>
+        <a  v-if="user == null||user == ''||user == 'undefined'" @click="toLogin" style="color:#337ab7;cursor:pointer">请登录&nbsp;&nbsp;&nbsp;</a>
         <span v-if="user != null&&user != ''&&user != 'undefined'">{{user.username}}&nbsp;&nbsp;&nbsp;</span>
         <a @click="toRegister" style="color:#337ab7;cursor:pointer">免费注册</a>&nbsp;&nbsp;&nbsp;
         <a v-if="user != null&&user != ''&&user != 'undefined'" @click="logout" style="color:#337ab7;cursor:pointer">注销</a>&nbsp;&nbsp;&nbsp;
@@ -29,7 +29,7 @@
   <el-col :span="8"><div class="grid-content"></div></el-col>
   <el-col :span="8">
       <div class="grid-content" style="line-height:80px">
-          <button type="button" onclick="window.open('cart/items')" style="background-color: #ff2832;border-color: #ff2832" class="btn btn-info">
+          <button type="button" @click="toShoppingCart" style="background-color: #ff2832;border-color: #ff2832" class="btn btn-info">
                 <span class="glyphicon glyphicon-shopping-cart"></span>
                 我的购物车
             </button>
@@ -47,7 +47,7 @@
                 <thead>
                 <tr id="table_head">
                     <th width="10%">
-                       店铺
+                       <input type="checkbox" checked="" onchange="checkOrNot(91,10.00,this)" class="shop_checkbox">
                     </th>
                     <th width="30%">商品信息</th>
                     <th width="10%">单价（元）</th>
@@ -58,80 +58,34 @@
                 </thead>
 
                 <tbody>
-                <tr class="shop_intro">
-                    <td class="tcol1">
-                        <!--<input type="checkbox" class="select_all_oneShop" checked="">
-                        <span>全选</span>-->
-                    </td>
-                    <td>
-                        <span>dd(店铺)</span>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                
-
-                    <tr class="cart_item" id="cart_item91">
+                    <tr v-for="(value, key) in cartBooks.cartItems" :key="key" class="cart_item" id="cart_item91">
                         <td class="tcol1">
-                            <input type="checkbox" checked="" onchange="checkOrNot(91,10.00,this)" class="shop_checkbox">
+                            <input type="checkbox" checked="" class="shop_checkbox">
                         </td>
                         <td>
-                            <a href="#"><img src="http://img3m0.ddimg.cn/51/16/23608680-1_b_12.jpg" width="20%"></a>
-                            <span>你是人间四月天（民国女神林徽因诗歌、散文、小说代表作完整收录。）</span>
+                            <a style="cursor:pointer" @click="toBookInfo(value.bookInfo.bookId)"><img :src="value.bookInfo.imageUrl" width="20%"></a>
+                            <span style="cursor:pointer" @click="toBookInfo(value.bookInfo.bookId)">{{value.bookInfo.name }}</span>
                         </td>
                         <td>
-                            <span class="red">￥10.00</span>
+                            <span class="red">￥{{value.bookInfo.price }}</span>
                         </td>
                         <td>
                             <div class="num">
-                                <input type="text" disabled="" class="buy_num" value="1">
-                                <a href="javascript:void(0);" class="num_add" onclick="add(91,10.00)"></a>
-                                <a href="javascript:void(0);" class="num_sub" onclick="sub(91,10.00)"></a>
+                                <input type="text" disabled="" class="buy_num" :value="value.buyNum">
+                                <a href="javascript:void(0);" class="num_add" @click="add(value)"></a>
+                                <a href="javascript:void(0);" class="num_sub" @click="sub(value)"></a>
                             </div>
                         </td>
                         <td>
                             <span class="red">￥</span>
                             <span class="red subTotal">
-										10.00
-									</span>
+                                {{value.subTotal }}
+							</span>
                         </td>
                         <td>
-                            <a href="javascript:void(0);" onclick="deleteCartItem(91)">删除</a>
+                            <a href="javascript:void(0);" @click="deleteCartItem(value)">删除</a>
                         </td>
                     </tr>
-                
-
-                    <tr class="cart_item" id="cart_item92">
-                        <td class="tcol1">
-                            <input type="checkbox" checked="" onchange="checkOrNot(92,34.50,this)" class="shop_checkbox">
-                        </td>
-                        <td>
-                            <a href="#"><img src="http://img3m9.ddimg.cn/89/3/24164999-1_b_8.jpg" width="20%"></a>
-                            <span>我们相爱一生，一生还是太短（央视《朗读者》董卿推荐，沈从文诞辰115周年全新修订）</span>
-                        </td>
-                        <td>
-                            <span class="red">￥34.50</span>
-                        </td>
-                        <td>
-                            <div class="num">
-                                <input type="text" disabled="" class="buy_num" value="1">
-                                <a href="javascript:void(0);" class="num_add" onclick="add(92,34.50)"></a>
-                                <a href="javascript:void(0);" class="num_sub" onclick="sub(92,34.50)"></a>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="red">￥</span>
-                            <span class="red subTotal">
-										34.50
-									</span>
-                        </td>
-                        <td>
-                            <a href="javascript:void(0);" onclick="deleteCartItem(92)">删除</a>
-                        </td>
-                    </tr>
-                
                 <tr class="tfoot">
                     <td class="tcol1">
                         <span>店铺合计	</span>
@@ -141,7 +95,7 @@
                     <td></td>
                     <td></td>
                     <td class="shop_total">
-                        ￥44.50
+                        {{cartBooks.total}}
                     </td>
                 </tr>
 
@@ -149,11 +103,34 @@
 
             </table>
         </div>
-
+        <div class="row account_div" style="margin-left:240px;">
+            <div id="batch">
+                <a @click="clearCartBooks(cartBooks)">清空购物车</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <router-link :to="{path: 'bookIndex'}" exact>
+                    继续购物
+                </router-link>
+            </div>
+            <div id="shopping_total">
+                <a href="javascript:void(0);" class="total_btn" onclick="checkTotal()">去支付</a>
+            </div>
+        </div>
+        <div class="row account_div" style="margin-left:240px;">
+            个性化商品推荐
+            <br /><br />...
+            <div style="width:150px;height:150px;float:left;margin-right:150px" >
+                <img src="http://img3m7.ddimg.cn/93/10/23473587-1_b_0.jpg">
+            </div>
+            <div style="width:150px;height:150px;float:left;margin-right:150px" >
+                <img src="http://img3m8.ddimg.cn/97/8/23812468-1_b_1.jpg">
+            </div>
+            <div style="width:150px;height:150px;float:left;margin-right:150px" >
+                <img src="http://img3m0.ddimg.cn/77/3/25278440-1_b_7.jpg">
+            </div>
+        </div>
     </div>
   </el-col>
 </el-row>
-
 </div>
 </template>
 
@@ -168,17 +145,63 @@ export default {
         name: '',
         password: ''
       },
-      books:[],
+      cartBooks:'',
       user:storage.get("user")
     }
   },
   created() {
-        this.getCategoryBooks();
+    this.getCart();
   },
   methods: {
+    toBookInfo(bookId){
+        this.$router.push({
+            path: 'bookDetail',
+            query: {
+              bookId: bookId
+            }
+        })
+    },
+    clearCartBooks(cart){
+        this.$axios.get("/cart/clear",{withCredentials : true}).then(res=>{
+            this.cartBooks.cartItems = [];
+            this.cartBooks.total = 0;
+        });
+    },
+    deleteCartItem(ob){
+        this.$axios.get("/cart/deletion/"+ob.bookInfo.bookId,{withCredentials : true}).then(res=>{
+            this.cartBooks = res.data;
+        });
+    },
+    add(ob){
+        const data = {
+            bookId: ob.bookInfo.bookId,
+            newNum: ob.buyNum + 1
+        };
+        this.$axios.post("/cart/buy/num/update",data,{withCredentials : true}).then(res=>{
+
+            this.cartBooks = res.data;
+        });
+    },
+    sub(ob){
+        if(ob.buyNum == 1){
+            return false;
+        }
+        const data = {
+            bookId: ob.bookInfo.bookId,
+            newNum: ob.buyNum - 1
+        };
+        this.$axios.post("/cart/buy/num/update",data,{withCredentials : true}).then(res=>{
+            console.log(res);
+            this.cartBooks = res.data;
+        });
+    },
+    toShoppingCart(){
+        this.$router.push({
+            path: 'shoppingCart'
+        })
+    },
     toAdmin(){
         var newPage = window.open();
-        // window.open('about:blank');
         newPage.location.href = 'http://localhost:8088/admin/adminLogin?username=zdd&password=123';
     },
     logout(){
@@ -201,15 +224,19 @@ export default {
         })
     },
     toRegister() {
-      this.$router.push({
+        this.$router.push({
             path: 'register'
         })
     },
-    getCategoryBooks(){
-        this.$axios.get("/index/category/"+this.cateId).then(res=>{
-            console.log("books------------------------");
-            console.log(res);
-            this.books = res.data;
+    getCart(){
+        this.$axios.get("/cart/getCart",{withCredentials:true}).then(res=>{
+            this.cartBooks = res.data;
+        }).catch(e => {
+            if(e.message == 'Network Error'){
+                this.$router.push({
+                    path: 'login'
+                })
+            }
         });
     }
   }
@@ -433,7 +460,7 @@ a {
 
 #cart_table_div {
     width: 1050px;
-    margin: 50px auto;
+    margin: 50px auto 0px;
     border: 1px solid #CCCCCC;
     background-color: #fafafa;
 }
@@ -455,5 +482,81 @@ a {
 }
 .tcol1 {
     text-align: center;
+}
+.account_div {
+    width: 1000px;
+    height: 72px;
+    z-index: 10;
+    margin: 20px auto;
+    padding: 20px 62px;
+    background: url(~@/assets/shopping_total.png) 0 center no-repeat;
+    position: relative;
+}
+#batch{
+	float: left;
+    line-height:60px;
+}
+#shopping_total{
+	float: right;
+}
+.total_p{
+	float: left;
+	padding:10px 10px 0px 0px;
+}
+.buy_num{
+	width: 38px!important;
+    height: 32px;
+    line-height: 32px;
+    border: 0;
+    background: #fff;
+    text-align: center;
+}
+.total_btn {
+    float: right;
+    display: block;
+    width: 116px;
+    height: 38px;
+    font: bold 18px/38px "Microsoft Yahei";
+    color: #fff;
+    background-color: #FF2832;
+    border-radius: 2px;
+    text-align: center;
+    margin-top: 24px;
+    margin-right: 20px;
+}
+
+.total_btn:hover{
+	background-color: #FF0000;
+	color: #fff;
+}
+.num{
+    float: left;
+    height: 34px;
+    border: 1px solid #e9e9e9;
+    width: 60px;
+    padding-right: 23px;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+}
+.num a{
+	position: absolute;
+    right: 0;
+    display: block;
+    width: 23px;
+	height: 17px;
+	background-image: url(~@/assets/product_sprites.png);
+	background-repeat: no-repeat;
+	background-color: #646464;
+	margin-left: 6px;
+    _display: inline;
+}
+.num_add{
+	background-position: -37px 0;
+	top: 0;
+}
+.num_sub {
+    background-position: -37px -17px;
+    top: 17px;
 }
 </style>
