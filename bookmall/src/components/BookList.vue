@@ -40,39 +40,40 @@
 <div style="height: 3px; background-color: #ff2832;"></div>
 <el-row style="width:100%">
   <el-col :span="3"><div class="grid-content"></div></el-col>
-  <el-col :span="15">
+  <el-col :span="12">
     <div class="grid-content">
         <div style="height:1px;background-color:#ffffff;margin-top:10px"></div>
             <ul class="shoplist_ul">
                     <li v-for="bookInfo in books">
-                        <a @click="toBookInfo(bookInfo.bookId)" :title="bookInfo.outline">
+                        <p style="float:left;margin-bottom:0px"><a @click="toBookInfo(bookInfo.bookId)" :title="bookInfo.outline">
                             <img :src="checkUrl(bookInfo.imageUrl)" :alt="bookInfo.outline" width="200px" height="200px">
-                        </a>
+                        </a></p>
                         <p class="name">
                             <a @click="toBookInfo(bookInfo.bookId)" target="_blank">
                                     {{bookInfo.outline }}
                             </a>
                         </p>
-                        <p class="price">
+                        <p style="" class="price">
                             <span class="search_now_price">￥ {{bookInfo.price}}</span>
                             <span style="color: #C0C0C0;">定价：</span>
                             <span class="oprice">￥{{bookInfo.marketPrice}}</span>
                             <span class="search_discount">&nbsp;({{bookInfo.discount}}折) </span>
                         </p>
+
+                        <p class="bottom_p" style="padding-top:15px;">
+                            <a style="margin-left:10px" class="search_btn_cart" @click="addCart(bookInfo.bookId)">加入购物车</a>
+                            <!-- <a class="search_btn_collect" href="javascript:void(0);">收藏</a> -->
+                        </p>
                         <p class="search_book_author">
                             <span><a :title="bookInfo.author">{{bookInfo.author}}</a> 著</span>
-                            <span> {{bookInfo.publishDate}}</span>
+                            <!--<span> {{bookInfo.publishDate}}</span>-->
                             <span>  /<a :title="bookInfo.press">{{bookInfo.press}}</a></span>
                         </p>
-                        <p class="detail">
+                        <p v-if="bookInfo.detail!=''" style="min-height:100px" class="detail">
                                 {{bookInfo.detail}}
                         </p>
-                        <div class="shop_button">
-                            <p class="bottom_p">
-                                <a class="search_btn_cart" @click="addCart(bookInfo.bookId)">加入购物车</a>
-                                <!-- <a class="search_btn_collect" href="javascript:void(0);">收藏</a> -->
-                            </p>
-                        </div>
+                        <p v-if="bookInfo.detail==''" style="min-height:100px"></p>
+                        <div style="height:5px"></div>
                         <hr />
                     </li>
             </ul>
