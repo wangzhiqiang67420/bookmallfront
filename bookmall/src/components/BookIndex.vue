@@ -41,12 +41,9 @@
   <el-col :span="3">
       <div class="grid-content">
          <div class="sidenav" style="width:100%">
-            <a style="cursor:pointer" @click="tobookList('7')">特色书单</a>
-            <a style="cursor:pointer" @click="tobookList('2')">科技</a>
-            <a style="cursor:pointer" @click="tobookList('3')">文学经典</a>
-            <a style="cursor:pointer" @click="tobookList('4')">人文社科</a>
-            <a style="cursor:pointer" @click="tobookList('5')">生活</a>
-            <a style="cursor:pointer" @click="tobookList('6')">儿童读物</a>
+            <a v-for="categorie in bookCategories" style="cursor:pointer" @click="tobookList(categorie.cateId)">
+                {{categorie.name}}
+            </a>
           </div>
       </div>
   </el-col>
@@ -172,11 +169,13 @@ export default {
         password: ''
       },
       books:[],
+      bookCategories:[],
       user:storage.get("user")
     }
   },
   created() {
-        this.getNewBooks();
+      this.getbookCategories();
+      this.getNewBooks();
   },
   methods: {
     checkUrl(url){
@@ -192,10 +191,8 @@ export default {
         })
     },
     toAdmin(){
-        console.log(111111111111);
         var newPage = window.open();
-        // window.open('about:blank');
-        newPage.location.href = 'http://localhost:8088/admin/adminLogin?username=zdd&password=123';
+        newPage.location.href = 'http://localhost:8088/admin/adminLogin?username=admin&password=123';
     },
     logout(){
         this.$axios.get("/user/logoutnew").then(res=>{
@@ -235,6 +232,12 @@ export default {
       this.$router.push({
             path: 'register'
         })
+    },
+    getbookCategories(){
+        this.$axios.get("/bookCategories").then(res=>{
+            console.log(res.data);
+            this.bookCategories = res.data;
+        });
     },
     getNewBooks(){
         this.$axios.get("/newBooks").then(res=>{
