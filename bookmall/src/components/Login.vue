@@ -31,8 +31,8 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       form: {
-        username: 'zdd',
-        password: '123'
+        username: '',
+        password: ''
       },
       username:''
     }

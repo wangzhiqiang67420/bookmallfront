@@ -192,7 +192,7 @@ export default {
         console.log(111111111111);
         var newPage = window.open();
         // window.open('about:blank');
-        newPage.location.href = 'http://localhost:8088/admin/adminLogin?username=zdd&password=123';
+        newPage.location.href = 'http://localhost:8088/admin/adminLogin?username='+this.user.username+'&password='+this.user.password;
     },
     logout(){
         this.$axios.get("/user/logoutnew").then(res=>{
