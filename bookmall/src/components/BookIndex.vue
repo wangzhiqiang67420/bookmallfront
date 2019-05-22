@@ -48,7 +48,7 @@
       </div>
   </el-col>
   <el-col :span="12"><div class="grid-content">
-  
+
   <el-carousel style="height:336px" :interval="50000000" arrow="always">
     <el-carousel-item style="height:336px">
         <img style="width:100%" src="~@/assets/lunbo1.jpg" title="" />
@@ -96,7 +96,7 @@
 
 <el-row style="width:100%">
   <el-col :span="3"><div class="grid-content"></div></el-col>
-  
+
   <el-col :span="15"><div class="grid-content">
     <span>新书上架</span>
     <div style="height:1px;background-color:#000000;margin-top:10px"></div>
@@ -169,13 +169,11 @@ export default {
         password: ''
       },
       books:[],
-      bookCategories:[],
       user:storage.get("user")
     }
   },
   created() {
-      this.getbookCategories();
-      this.getNewBooks();
+        this.getNewBooks();
   },
   methods: {
     checkUrl(url){
@@ -191,8 +189,10 @@ export default {
         })
     },
     toAdmin(){
+        console.log(111111111111);
         var newPage = window.open();
-        newPage.location.href = 'http://localhost:8088/admin/adminLogin?username=admin&password=123';
+        // window.open('about:blank');
+        newPage.location.href = 'http://localhost:8088/admin/adminLogin?username=zdd&password=123';
     },
     logout(){
         this.$axios.get("/user/logoutnew").then(res=>{
@@ -232,12 +232,6 @@ export default {
       this.$router.push({
             path: 'register'
         })
-    },
-    getbookCategories(){
-        this.$axios.get("/bookCategories").then(res=>{
-            console.log(res.data);
-            this.bookCategories = res.data;
-        });
     },
     getNewBooks(){
         this.$axios.get("/newBooks").then(res=>{
