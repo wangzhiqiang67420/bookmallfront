@@ -72,8 +72,8 @@
                         <td>
                             <div class="num">
                                 <input type="text" disabled="" class="buy_num" :value="value.buyNum">
-                                <a href="javascript:void(0);" class="num_add" @click="add(value)"></a>
-                                <a href="javascript:void(0);" class="num_sub" @click="sub(value)"></a>
+                                <a  class="num_add" @click="add(value)"></a>
+                                <a  class="num_sub" @click="sub(value)"></a>
                             </div>
                         </td>
                         <td>
@@ -83,7 +83,7 @@
 							</span>
                         </td>
                         <td>
-                            <a href="javascript:void(0);" @click="deleteCartItem(value)">删除</a>
+                            <a @click="deleteCartItem(value)">删除</a>
                         </td>
                     </tr>
                 <tr class="tfoot">
@@ -112,7 +112,7 @@
                 </router-link>
             </div>
             <div id="shopping_total">
-                <a href="javascript:void(0);" class="total_btn" onclick="checkTotal()">去支付</a>
+                <a class="total_btn" onclick="checkTotal()">去支付</a>
             </div>
         </div>
         <div class="row account_div" style="margin-left:240px;">
@@ -178,7 +178,6 @@ export default {
             newNum: ob.buyNum + 1
         };
         this.$axios.post("/cart/buy/num/update",data,{withCredentials : true}).then(res=>{
-
             this.cartBooks = res.data;
         });
     },
