@@ -135,6 +135,12 @@ export default {
   },
   methods: {
     checkUrl(url){
+        console.log("0--------------------");
+        console.log(url);
+        if(url == undefined){
+            return "";
+        }
+        
         if(url.indexOf("http") >= 0){
             return url;
         }else if(url.indexOf("upload") >= 0){
