@@ -44,7 +44,7 @@
     <div class="grid-content">
         <div style="height:1px;background-color:#ffffff;margin-top:10px"></div>
             <ul class="shoplist_ul">
-                    <li v-for="bookInfo in books">
+                    <li v-for="bookInfo in books.list">
                         <p style="float:left;margin-bottom:0px"><a @click="toBookInfo(bookInfo.bookId)" :title="bookInfo.outline">
                             <img :src="checkUrl(bookInfo.imageUrl)" :alt="bookInfo.outline" width="200px" height="200px">
                         </a></p>
@@ -77,7 +77,25 @@
                         <hr />
                     </li>
             </ul>
+            <ul class="pagination pagination-lg">
+                <li v-if="books.isFirstPage" class="disabled"><a href="javascript:void(0);">&laquo;</a></li>
 
+                <li v-if="!books.isFirstPage">
+                    <a style="cursor:pointer" @click="getCategoryBooks(books.prePage)">&laquo;</a>
+                </li>
+                <li :class="getClass(current)" v-for="current in books.pages<6?books.pages:(books.pageNum < 6 ? 6 :books.pageNum) ">
+                    <a style="cursor:pointer" @click="getCategoryBooks(current)">
+                         {{current}}
+                    </a>
+                </li>
+                <li v-if="books.isLastPage" class="disabled"><a href="javascript:void(0);">&raquo;</a></li>
+                <li v-if="!books.isLastPage"><a style="cursor:pointer" @click="getCategoryBooks(books.nextPage)" >&raquo;</a></li>
+                <li>
+                    <a style="cursor:pointer" @click="getCategoryBooks(books.pages)">末页</a>
+                </li>
+                <li><a href="javascript:void(0);">共{{books.pages}}页</a></li>
+                <li><a href="javascript:void(0);">共{{books.total}}本书</a></li>
+            </ul>
     </div>
   </el-col>
   <el-col :span="6">
@@ -117,6 +135,7 @@
 
 <script>
 import storage from '@/libs/storage';
+import 'bootstrap/dist/css/bootstrap.min.css'
 export default {
   name: 'Login',
   data () {
@@ -126,14 +145,20 @@ export default {
         name: '',
         password: ''
       },
+      pageNum:1,
       books:[],
       user:storage.get("user")
     }
   },
   created() {
-        this.getCategoryBooks();
+        this.getCategoryBooks(this.pageNum);
   },
   methods: {
+    getClass(current){
+        if(current == this.pageNum){
+            return 'active';
+        }
+    },
     checkUrl(url){
         if(url == undefined){
             return "";
@@ -195,8 +220,9 @@ export default {
             path: 'register'
         })
     },
-    getCategoryBooks(){
-        this.$axios.get("/index/category/"+this.cateId).then(res=>{
+    getCategoryBooks(page){
+        this.pageNum = page;
+        this.$axios.get("/index/category/"+this.cateId+"?page="+this.pageNum).then(res=>{
             this.books = res.data;
         });
     }
@@ -416,5 +442,44 @@ a {
 }
 .search_btn_collect:hover{
 	background-color: #ffC8EE;
+}
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+    z-index: 2;
+    color: #fff;
+    cursor: default;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+.pagination-lg>li>a, .pagination-lg>li>span {
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.3333333;
+}
+.pagination>li>a, .pagination>li>span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+.pagination-lg>li>a, .pagination-lg>li>span {
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.3333333;
+}
+.pagination>li>a, .pagination>li>span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
 }
 </style>

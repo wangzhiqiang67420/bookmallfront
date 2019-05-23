@@ -6,6 +6,8 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from "axios";
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.min'
 Vue.prototype.$axios = axios;
 axios.defaults.baseURL = "http://localhost:8088";
 // 注册element-ui
