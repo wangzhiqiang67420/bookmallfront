@@ -195,15 +195,25 @@
 <script>
 import storage from '@/libs/storage';
 export default {
-  name: 'Login',
+  name: 'bookDetail',
   data () {
     return {
-      bookId:this.$route.query.bookId ,
-      form: {
-        name: '',
-        password: ''
+      bookId:this.$route.query.bookId,
+      book:{
+        bookInfo:{
+            categoryName: '',
+            name: '',
+            outline: '',
+            bookId: '',
+            size: '',
+            packStyle: '',
+            isbn: '',
+            detail: '',
+            author: '',
+            catalog: '',
+            
+        }
       },
-      book:'',
       user:storage.get("user")
     }
   },
@@ -270,7 +280,6 @@ export default {
     getBookInfo(){
         this.$axios.get("/book/getInfo/"+this.bookId).then(res=>{
             this.book = res.data;
-            console.log(this.book);
         });
     }
   }

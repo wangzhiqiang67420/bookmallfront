@@ -169,10 +169,12 @@ export default {
         password: ''
       },
       books:[],
+      bookCategories:[],
       user:storage.get("user")
     }
   },
   created() {
+        this.getbookCategories();
         this.getNewBooks();
   },
   methods: {
@@ -189,7 +191,6 @@ export default {
         })
     },
     toAdmin(){
-        console.log(111111111111);
         var newPage = window.open();
         // window.open('about:blank');
         newPage.location.href = 'http://localhost:8088/admin/adminLogin?username='+this.user.username+'&password='+this.user.password;
@@ -237,6 +238,11 @@ export default {
         this.$axios.get("/newBooks").then(res=>{
             this.books = res.data;
         });
+    },
+    getbookCategories(){
+      this.$axios.get("/bookCategories").then(res=>{
+        this.bookCategories = res.data;
+      });
     }
   }
 }
