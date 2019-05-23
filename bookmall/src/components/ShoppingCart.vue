@@ -103,7 +103,7 @@
 
             </table>
         </div>
-        <div class="row account_div" style="margin-left:240px;">
+        <div class="account_div" style="align:center;">
             <div id="batch">
                 <a @click="clearCartBooks(cartBooks)">清空购物车</a>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -112,22 +112,23 @@
                 </router-link>
             </div>
             <div id="shopping_total">
-                <a class="total_btn" onclick="checkTotal()">去支付</a>
+                <a class="total_btn" style="color:#fff">去支付</a>
             </div>
         </div>
-        <div class="row account_div" style="margin-left:240px;">
+        <div class="account_div" style="align:center;">
             个性化商品推荐
-            <br /><br />...
-            <div style="width:150px;height:150px;float:left;margin-right:150px" >
+            <br /><br />
+            <div style="width:110px;height:150px;float:left;margin-right:150px" >
                 <img src="http://img3m7.ddimg.cn/93/10/23473587-1_b_0.jpg">
             </div>
-            <div style="width:150px;height:150px;float:left;margin-right:150px" >
+            <div style="width:110px;height:150px;float:left;margin-right:150px" >
                 <img src="http://img3m8.ddimg.cn/97/8/23812468-1_b_1.jpg">
             </div>
-            <div style="width:150px;height:150px;float:left;margin-right:150px" >
+            <div style="width:110px;height:150px;float:left;margin-right:150px" >
                 <img src="http://img3m0.ddimg.cn/77/3/25278440-1_b_7.jpg">
             </div>
         </div>
+        
     </div>
   </el-col>
 </el-row>
@@ -493,7 +494,6 @@ a {
 }
 #batch{
 	float: left;
-    line-height:60px;
 }
 #shopping_total{
 	float: right;
@@ -520,7 +520,7 @@ a {
     background-color: #FF2832;
     border-radius: 2px;
     text-align: center;
-    margin-top: 24px;
+    margin-top: 4px;
     margin-right: 20px;
 }
 
