@@ -201,7 +201,7 @@ export default {
     },
     toAdmin(){
         var newPage = window.open();
-        newPage.location.href = 'http://localhost:8088/admin/adminLogin?username=zdd&password=123';
+         newPage.location.href = 'http://localhost:8088/admin/adminLogin?username='+this.user.username+'&password='+this.user.password;
     },
     logout(){
         this.$axios.get("/user/logoutnew").then(res=>{

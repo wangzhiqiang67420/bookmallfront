@@ -125,7 +125,7 @@
                             <a class="img">
                                 <img src="http://img3m6.ddimg.cn/86/32/24035306-1_b_6.jpg">
                             </a>
-                    </li>  
+                    </li>
                 </ul>
             </div>
   </div></el-col>
@@ -177,7 +177,7 @@
                                 <pre>{{book.bookInfo.catalog}}</pre>
                             </blockquote>
                         </div>
-                        
+
                     </div>
                 </div>
                 <div id="book_comment_content" style="display: none;" class="nav_content">
@@ -241,7 +241,7 @@ export default {
     toAdmin(){
         var newPage = window.open();
         // window.open('about:blank');
-        newPage.location.href = 'http://localhost:8088/admin/adminLogin?username=zdd&password=123';
+         newPage.location.href = 'http://localhost:8088/admin/adminLogin?username='+this.user.username+'&password='+this.user.password;
     },
     logout(){
         this.$axios.get("/user/logoutnew").then(res=>{
@@ -424,7 +424,7 @@ a {
     float: left;
     width: 20px;
     height: 19px;
-    
+
     margin: 9px 4px 0 0;
 }
 .add_cart{

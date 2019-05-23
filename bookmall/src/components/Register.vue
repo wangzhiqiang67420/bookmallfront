@@ -74,12 +74,12 @@
                   <el-radio v-model="form.identity" label="ordinary">普通用户</el-radio>
                   <el-radio v-model="form.identity" label="business">企业用户</el-radio>
               </el-form-item>
-                
+
               <el-form-item label="">
                   <el-button type="primary" plain @click.native.prevent="checkPass">注册</el-button>
               </el-form-item>
           </el-form>
-    </div>  
+    </div>
 </el-row>
 
 
@@ -126,7 +126,7 @@ export default {
     toAdmin(){
         var newPage = window.open();
         // window.open('about:blank');
-        newPage.location.href = 'http://localhost:8088/admin/adminLogin?username=zdd&password=123';
+        newPage.location.href = 'http://localhost:8088/admin/adminLogin?username='+this.user.username+'&password='+this.user.password;
     },
     toLogin(){
         this.$router.push({
@@ -169,7 +169,7 @@ export default {
           return false;
         }
       });
-    }   
+    }
   }
 }
 </script>

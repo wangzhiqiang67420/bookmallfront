@@ -31,8 +31,8 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       form: {
-        username: 'zdd',
-        password: '123'
+        username: '',
+        password: ''
       },
       username:''
     }
@@ -43,6 +43,7 @@ export default {
       let password = this.form.password;
       this.$axios.get("/user/loginnew",{params: {username: username,password: password}}).then(res=>{
         if(res.data.status !== '0'){
+            res.data.user.password=password;
             storage.set("user",res.data.user);
             storage.set("sessionId",res.data.sessionId);
             this.$router.push({
@@ -63,7 +64,7 @@ export default {
             path: 'bookIndex'
         })
     }
-    
+
   }
 }
 </script>
