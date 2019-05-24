@@ -47,7 +47,7 @@
                 <thead>
                 <tr id="table_head">
                     <th width="10%">
-                       <input type="checkbox" checked="" onchange="checkOrNot(91,10.00,this)" class="shop_checkbox">
+                        <input id="quan" type="checkbox" @click="checkAll($event)"> 全选
                     </th>
                     <th width="30%">商品信息</th>
                     <th width="10%">单价（元）</th>
@@ -56,11 +56,10 @@
                     <th width="10%">操作</th>
                 </tr>
                 </thead>
-
                 <tbody>
                     <tr v-for="(value, key) in cartBooks.cartItems" :key="key" class="cart_item" id="cart_item91">
                         <td class="tcol1">
-                            <input type="checkbox" checked="" class="shop_checkbox">
+                            <input @click="checkOrNot(value.bookInfo.bookId)" class="checkItem" type="checkbox" :value="value.bookInfo.bookId" v-model="checkData">
                         </td>
                         <td>
                             <a style="cursor:pointer" @click="toBookInfo(value.bookInfo.bookId)"><img :src="value.bookInfo.imageUrl" width="20%"></a>
@@ -146,14 +145,55 @@ export default {
         name: '',
         password: ''
       },
+      checkData: [],
       cartBooks:'',
       user:storage.get("user")
     }
   },
+  watch: { // 监视双向绑定的数据数组
+        checkData: {
+            handler(){ // 数据数组有变化将触发此函数
+                const n = 0;
+                let is = [];
+                for(let item in this.cartBooks.cartItems){
+                  is.push(item);
+                }
+                if(this.checkData.length == is.length){
+                    document.querySelector('#quan').checked = true;
+                }else {
+                    document.querySelector('#quan').checked = false;
+                }
+            },
+            deep: true // 深度监视
+        }
+  },
   created() {
     this.getCart();
+    
   },
   methods: {
+    checkAll(e){ // 点击全选事件函数
+        var checkObj = document.querySelectorAll('.checkItem'); // 获取所有checkbox项
+        if(e.target.checked){ // 判定全选checkbox的勾选状态
+            for(var i=0;i<checkObj.length;i++){
+                if(!checkObj[i].checked){ // 将未勾选的checkbox选项push到绑定数组中
+                    this.checkData.push(checkObj[i].value);
+                }
+            }
+        }else { // 如果是去掉全选则清空checkbox选项绑定数组
+            this.checkData = [];
+        }
+    },
+    checkOrNot(bookId){
+        const data = {
+            bookId: bookId
+        };
+        this.$axios.post("/cart/checkBook",data,{withCredentials : true}).then(res=>{
+            console.log("------");
+            console.log(res.data.data.total);
+            this.cartBooks.total = res.data.data.total;
+        });
+    },
     toBookInfo(bookId){
         this.$router.push({
             path: 'bookDetail',
@@ -209,7 +249,7 @@ export default {
             if(res.data == 'logoutnew'){
                  storage.set("user","");
                  this.$router.push({
-                    path: 'login'
+                    path: '/'
                  })
 
             }
@@ -231,6 +271,10 @@ export default {
     getCart(){
         this.$axios.get("/cart/getCart",{withCredentials:true}).then(res=>{
             this.cartBooks = res.data;
+            for(let bookId in this.cartBooks.cartItems){
+                this.checkData.push(bookId);
+            }
+            
         }).catch(e => {
             if(e.message == 'Network Error'){
                 this.$router.push({

@@ -202,9 +202,7 @@ export default {
         this.$axios.get("/user/logoutnew").then(res=>{
             if(res.data == 'logoutnew'){
                  storage.set("user","");
-                 this.$router.push({
-                    path: 'login'
-                 })
+                 location. reload();
             }
         });
     },

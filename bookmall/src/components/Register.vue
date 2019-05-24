@@ -112,7 +112,7 @@ export default {
             if(res.data == 'logoutnew'){
                  storage.set("user","");
                  this.$router.push({
-                    path: 'login'
+                    path: '/'
                  })
 
             }
