@@ -19,12 +19,26 @@
 
 <el-row style="width:100%">
   <el-col :span="4"><div class="grid-content"></div></el-col>
-  <el-col :span="4">
+  <el-col :span="2">
       <div class="grid-content">
          <img style="width:130px" src="~@/assets/book1.jpg" title="回到首页" />
       </div>
   </el-col>
-  <el-col :span="8"><div class="grid-content"></div></el-col>
+  <el-col :span="10"><div class="grid-content">
+        <div class="grid-content">
+            <form style="margin-top:4%;margin-left:20px" >
+                <div style="float:left" class="form-group">
+                    <label class="sr-only" for="keywords">关键字</label>
+                    <el-input style="width:500px" v-model="keywords"></el-input>
+                </div>
+                
+                <button style="margin-left:10px" type="button" @click="getBooksByKeyWord()" class="btn btn-info">
+                    <span class="glyphicon glyphicon-search"></span>
+                    搜索
+                </button>
+            </form>
+        </div>
+  </div></el-col>
   <el-col :span="8">
       <div class="grid-content" style="line-height:80px">
           <button type="button" @click="toShoppingCart" style="background-color: #ff2832;border-color: #ff2832" class="btn btn-info">
@@ -169,6 +183,7 @@ export default {
         password: ''
       },
       books:[],
+      keywords:'',
       bookCategories:[],
       user:storage.get("user")
     }
@@ -244,6 +259,17 @@ export default {
       this.$axios.get("/bookCategories").then(res=>{
         this.bookCategories = res.data;
       });
+    },
+    getBooksByKeyWord(){
+        if(this.keywords == undefined){
+            this.keywords = '';
+        }
+        this.$router.push({
+            path: 'bookList',
+            query: {
+              keywords: this.keywords
+            }
+        })
     }
   }
 }

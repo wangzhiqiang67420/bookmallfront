@@ -189,8 +189,6 @@ export default {
             bookId: bookId
         };
         this.$axios.post("/cart/checkBook",data,{withCredentials : true}).then(res=>{
-            console.log("------");
-            console.log(res.data.data.total);
             this.cartBooks.total = res.data.data.total;
         });
     },
@@ -231,7 +229,6 @@ export default {
             newNum: ob.buyNum - 1
         };
         this.$axios.post("/cart/buy/num/update",data,{withCredentials : true}).then(res=>{
-            console.log(res);
             this.cartBooks = res.data;
         });
     },

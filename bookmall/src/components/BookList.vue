@@ -19,14 +19,28 @@
 
 <el-row style="width:100%">
   <el-col :span="4"><div class="grid-content"></div></el-col>
-  <el-col :span="4">
+  <el-col :span="2">
       <div class="grid-content">
          <router-link :to="{path: 'bookIndex'}" exact>
             <img style="width:130px" src="~@/assets/book1.jpg" title="回到首页" />
          </router-link>
       </div>
   </el-col>
-  <el-col :span="8"><div class="grid-content"></div></el-col>
+  <el-col :span="10">
+    <div class="grid-content">
+        <form style="margin-top:4%;margin-left:20px" >
+            <div style="float:left" class="form-group">
+                <label class="sr-only" for="keywords">关键字</label>
+                <el-input style="width:500px" v-model="keywords"></el-input>
+            </div>
+            
+            <button style="margin-left:10px" type="button" @click="getBooksByKeyWord()" class="btn btn-info">
+                <span class="glyphicon glyphicon-search"></span>
+                搜索
+            </button>
+        </form>
+    </div>
+  </el-col>
   <el-col :span="8">
       <div class="grid-content" style="line-height:80px">
           <button type="button" @click="toShoppingCart" style="background-color: #ff2832;border-color: #ff2832" class="btn btn-info">
@@ -140,7 +154,8 @@ export default {
   name: 'Login',
   data () {
     return {
-      cateId:this.$route.query.cateId ,
+      cateId:this.$route.query.cateId,
+      keywords:this.$route.query.keywords,
       form: {
         name: '',
         password: ''
@@ -151,7 +166,12 @@ export default {
     }
   },
   created() {
-        this.getCategoryBooks(this.pageNum);
+        if(this.keywords != '' && this.keywords != undefined){
+            this.getBooksByKeyWord();
+        }else{
+            this.getCategoryBooks(this.pageNum);
+        }
+        
   },
   methods: {
     getClass(current){
@@ -220,8 +240,22 @@ export default {
         })
     },
     getCategoryBooks(page){
+        if(page == undefined){
+            page = 1;
+        }
         this.pageNum = page;
         this.$axios.get("/index/category/"+this.cateId+"?page="+this.pageNum).then(res=>{
+            this.books = res.data;
+        });
+    },
+    getBooksByKeyWord(){
+        if(this.keywords == undefined){
+            this.keywords = '';
+        }
+        if(this.cateId == undefined){
+            this.cateId = 0;
+        }
+        this.$axios.get("/index/category/"+this.cateId+"?keywords="+this.keywords).then(res=>{
             this.books = res.data;
         });
     }
