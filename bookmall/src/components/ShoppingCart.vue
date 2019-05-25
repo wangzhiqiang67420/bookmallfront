@@ -3,15 +3,16 @@
 <el-row style="width:100%">
   <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
   <el-col :span="4"><div class="grid-content bg-purple-light"></div></el-col>
-  <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-  <el-col :span="4"><div class="grid-content bg-purple-light"></div></el-col>
-  <el-col :span="8">
+  <el-col :span="2"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="2"><div class="grid-content bg-purple-light"></div></el-col>
+  <el-col :span="12">
       <div class="grid-content bg-purple">
         欢迎来到云香书屋&nbsp;&nbsp;&nbsp;
         <a  v-if="user == null||user == ''||user == 'undefined'" @click="toLogin" style="color:#337ab7;cursor:pointer">请登录&nbsp;&nbsp;&nbsp;</a>
         <span v-if="user != null&&user != ''&&user != 'undefined'">{{user.username}}&nbsp;&nbsp;&nbsp;</span>
         <a @click="toRegister" style="color:#337ab7;cursor:pointer">免费注册</a>&nbsp;&nbsp;&nbsp;
         <a v-if="user != null&&user != ''&&user != 'undefined'" @click="logout" style="color:#337ab7;cursor:pointer">注销</a>&nbsp;&nbsp;&nbsp;
+        <a v-if="user != null&&user != ''&&user != 'undefined'&&user.identity!='ordinary'" @click="toOrderList" style="color:#337ab7;cursor:pointer">我的订单</a>&nbsp;&nbsp;&nbsp;
         <a v-if="user != null&&user != ''&&user != 'undefined'&&user.identity!='ordinary'" @click="toAdmin" style="color:#337ab7;cursor:pointer">进入后台管理页面</a>
       </div>
   </el-col>
@@ -172,6 +173,11 @@ export default {
     
   },
   methods: {
+    toOrderList(){
+      this.$router.push({
+            path: 'orderList'
+      })
+    },
     checkAll(e){ // 点击全选事件函数
         var checkObj = document.querySelectorAll('.checkItem'); // 获取所有checkbox项
         if(e.target.checked){ // 判定全选checkbox的勾选状态

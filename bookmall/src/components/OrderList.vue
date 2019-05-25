@@ -3,9 +3,9 @@
 <el-row style="width:100%">
   <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
   <el-col :span="4"><div class="grid-content bg-purple-light"></div></el-col>
-  <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-  <el-col :span="4"><div class="grid-content bg-purple-light"></div></el-col>
-  <el-col :span="8">
+  <el-col :span="2"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="2"><div class="grid-content bg-purple-light"></div></el-col>
+  <el-col :span="12">
       <div class="grid-content bg-purple">
         欢迎来到云香书屋&nbsp;&nbsp;&nbsp;
         <a  v-if="user == null||user == ''||user == 'undefined'" @click="toLogin" style="color:#337ab7;cursor:pointer">请登录&nbsp;&nbsp;&nbsp;</a>
@@ -82,7 +82,6 @@
                             <button type="button" class="btn btn-xs btn-danger" @click="deleteOrder(value.orderId)">
                                     取消订单
                             </button>
-                            
                         </td>
                     </tr>
                 </tbody>
