@@ -38,29 +38,35 @@
 </el-row>
 
 <div style="height: 3px; background-color: #ff2832;"></div>
+
 <el-row style="width:100%">
   <el-col :span="24">
     <div class="grid-content">
         <div style="height:1px;background-color:#ffffff;margin-top:10px"></div>
+        <div v-if="user != null&&user != ''&&user != 'undefined'" class="row" id="cart_table_div">
+            收货人信息&nbsp;&nbsp;&nbsp;
+            <div>
+            姓名：<span v-if="user != null&&user != ''&&user != 'undefined'">{{user.nickname}}</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            地址：<span v-if="user != null&&user != ''&&user != 'undefined'">{{user.detailAddress}}</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            联系方式：<span v-if="user != null&&user != ''&&user != 'undefined'">{{user.phone}}</span>
+            </div>
+        </div>
         <div class="row" id="cart_table_div">
             <table id="cart_table" border="0" cellpadding="0" cellspacing="0">
                 <thead>
                 <tr id="table_head">
-                    <th width="10%">
-                        <input id="quan" type="checkbox" @click="checkAll($event)"> 全选
-                    </th>
+                    <th width="10%"></th>
                     <th width="30%">商品信息</th>
-                    <th width="10%">单价（元）</th>
-                    <th width="10%">数量</th>
-                    <th width="10%">小计（元）</th>
-                    <th width="10%">操作</th>
+                    <th width="20%">单价（元）</th>
+                    <th width="20%">数量</th>
+                    <th width="20%">小计（元）</th>
                 </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(value, key) in cartBooks.cartItems" :key="key" class="cart_item" id="cart_item91">
-                        <td class="tcol1">
-                            <input @click="checkOrNot(value.bookInfo.bookId)" class="checkItem" type="checkbox" :value="value.bookInfo.bookId" v-model="checkData">
-                        </td>
+                        <td></td>
                         <td>
                             <a style="cursor:pointer" @click="toBookInfo(value.bookInfo.bookId)"><img :src="value.bookInfo.imageUrl" width="20%"></a>
                             <span style="cursor:pointer" @click="toBookInfo(value.bookInfo.bookId)">{{value.bookInfo.name }}</span>
@@ -69,10 +75,8 @@
                             <span class="red">￥{{value.bookInfo.price }}</span>
                         </td>
                         <td>
-                            <div class="num">
-                                <input type="text" disabled="" class="buy_num" :value="value.buyNum">
-                                <a  class="num_add" @click="add(value)"></a>
-                                <a  class="num_sub" @click="sub(value)"></a>
+                            <div class="">
+                                {{value.buyNum }}
                             </div>
                         </td>
                         <td>
@@ -81,13 +85,10 @@
                                 {{value.subTotal }}
 							</span>
                         </td>
-                        <td>
-                            <a @click="deleteCartItem(value)">删除</a>
-                        </td>
                     </tr>
                 <tr class="tfoot">
                     <td class="tcol1">
-                        <span>店铺合计	</span>
+                        <span>合计</span>
                     </td>
                     <td></td>
                     <td></td>
@@ -103,15 +104,8 @@
             </table>
         </div>
         <div class="account_div" style="align:center;">
-            <div id="batch">
-                <a @click="clearCartBooks(cartBooks)">清空购物车</a>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <router-link :to="{path: 'bookIndex'}" exact>
-                    继续购物
-                </router-link>
-            </div>
             <div id="shopping_total">
-                <a @click="toOrderList()" class="total_btn" style="color:#fff">下订单</a>
+                <a @click="toPay()" class="total_btn" style="color:#fff">去支付</a>
             </div>
         </div>
         <div class="account_div" style="align:center;">
@@ -140,7 +134,7 @@ export default {
   name: 'Login',
   data () {
     return {
-      cateId:this.$route.query.cateId ,
+      bookIds:this.$route.query.bookIds,
       form: {
         name: '',
         password: ''
@@ -150,48 +144,12 @@ export default {
       user:storage.get("user")
     }
   },
-  watch: { // 监视双向绑定的数据数组
-        checkData: {
-            handler(){ // 数据数组有变化将触发此函数
-                const n = 0;
-                let is = [];
-                for(let item in this.cartBooks.cartItems){
-                  is.push(item);
-                }
-                if(this.checkData.length == is.length){
-                    document.querySelector('#quan').checked = true;
-                }else {
-                    document.querySelector('#quan').checked = false;
-                }
-            },
-            deep: true // 深度监视
-        }
-  },
   created() {
-    this.getCart();
+    this.getOrderCart();
     
   },
   methods: {
-    checkAll(e){ // 点击全选事件函数
-        var checkObj = document.querySelectorAll('.checkItem'); // 获取所有checkbox项
-        if(e.target.checked){ // 判定全选checkbox的勾选状态
-            for(var i=0;i<checkObj.length;i++){
-                if(!checkObj[i].checked){ // 将未勾选的checkbox选项push到绑定数组中
-                    this.checkData.push(checkObj[i].value);
-                }
-            }
-        }else { // 如果是去掉全选则清空checkbox选项绑定数组
-            this.checkData = [];
-        }
-    },
-    checkOrNot(bookId){
-        const data = {
-            bookId: bookId
-        };
-        this.$axios.post("/cart/checkBook",data,{withCredentials : true}).then(res=>{
-            this.cartBooks.total = res.data.data.total;
-        });
-    },
+    
     toBookInfo(bookId){
         this.$router.push({
             path: 'bookDetail',
@@ -200,38 +158,8 @@ export default {
             }
         })
     },
-    clearCartBooks(cart){
-        this.$axios.get("/cart/clear",{withCredentials : true}).then(res=>{
-            this.cartBooks.cartItems = [];
-            this.cartBooks.total = 0;
-        });
-    },
-    deleteCartItem(ob){
-        this.$axios.get("/cart/deletion/"+ob.bookInfo.bookId,{withCredentials : true}).then(res=>{
-            this.cartBooks = res.data;
-        });
-    },
-    add(ob){
-        const data = {
-            bookId: ob.bookInfo.bookId,
-            newNum: ob.buyNum + 1
-        };
-        this.$axios.post("/cart/buy/num/update",data,{withCredentials : true}).then(res=>{
-            this.cartBooks = res.data;
-        });
-    },
-    sub(ob){
-        if(ob.buyNum == 1){
-            return false;
-        }
-        const data = {
-            bookId: ob.bookInfo.bookId,
-            newNum: ob.buyNum - 1
-        };
-        this.$axios.post("/cart/buy/num/update",data,{withCredentials : true}).then(res=>{
-            this.cartBooks = res.data;
-        });
-    },
+    
+    
     toShoppingCart(){
         this.$router.push({
             path: 'shoppingCart'
@@ -265,29 +193,53 @@ export default {
             path: 'register'
         })
     },
-    toOrderList() {
-        this.$router.push({
-            path: 'cartOrder',
-            query: {
-                bookIds: this.checkData.join(",")
-            }
-        })
-        
+    getOrderCart(){
+        const data = {
+            bookIds: this.bookIds.split(",")
+        };
+        this.$axios.post("/cart/orderCart",data,{withCredentials : true}).then(res=>{
+            this.cartBooks = res.data.data;
+        });
     },
-    getCart(){
-        this.$axios.get("/cart/getCart",{withCredentials:true}).then(res=>{
-            this.cartBooks = res.data;
-            for(let bookId in this.cartBooks.cartItems){
-                this.checkData.push(bookId);
-            }
-            
-        }).catch(e => {
-            if(e.message == 'Network Error'){
-                this.$router.push({
-                    path: 'login'
-                })
+    toPay(){
+        if(this.user == null){
+            this.toLogin();
+        }
+        const data = {
+            bookIds: this.bookIds,
+            userId: this.user.userId
+        };
+        this.$axios.post("/order/payOrder",data,{withCredentials : true}).then(res=>{
+            if(res.data == 'payment'){
+                this.$confirm('支付成功', '提示', {
+                    confirmButtonText: '进入订单列表',
+                    cancelButtonText: '继续购物',
+                    type: 'warning'
+                    }).then(() => {
+                        this.$router.push({
+                            path: 'orderList'
+                        })
+                    }).catch(() => {
+                        this.$router.push({
+                            path: 'bookIndex'
+                        })   
+                    });
             }
         });
+        // this.$confirm('支付成功, 是否=进入个人订单列表查看?', '提示', {
+        //   confirmButtonText: '确定',
+        //   cancelButtonText: '取消',
+        //   type: 'warning'
+        // }).then(() => {
+        //     this.$router.push({
+        //         path: 'orderList'
+        //     })
+        // }).catch(() => {
+        //   this.$message({
+        //     type: 'info',
+        //     message: '已取消删除'
+        //   });          
+        // });
     }
   }
 }

@@ -3,15 +3,16 @@
 <el-row style="width:100%">
   <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
   <el-col :span="4"><div class="grid-content bg-purple-light"></div></el-col>
-  <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-  <el-col :span="4"><div class="grid-content bg-purple-light"></div></el-col>
-  <el-col :span="8">
+  <el-col :span="2"><div class="grid-content bg-purple"></div></el-col>
+  <el-col :span="2"><div class="grid-content bg-purple-light"></div></el-col>
+  <el-col :span="12">
       <div class="grid-content bg-purple">
         欢迎来到云香书屋&nbsp;&nbsp;&nbsp;
         <a v-if="user == null||user == ''||user == 'undefined'" @click="toLogin" style="color:#337ab7;cursor:pointer">请登录&nbsp;&nbsp;&nbsp;</a>
         <span v-if="user != null&&user != ''&&user != 'undefined'">{{user.username}}&nbsp;&nbsp;&nbsp;</span>
         <a @click="toRegister" style="color:#337ab7;cursor:pointer">免费注册</a>&nbsp;&nbsp;&nbsp;
         <a v-if="user != null&&user != ''&&user != 'undefined'" @click="logout" style="color:#337ab7;cursor:pointer">注销</a>&nbsp;&nbsp;&nbsp;
+        <a v-if="user != null&&user != ''&&user != 'undefined'&&user.identity!='ordinary'" @click="toOrderList" style="color:#337ab7;cursor:pointer">我的订单</a>&nbsp;&nbsp;&nbsp;
         <a v-if="user != null&&user != ''&&user != 'undefined'&&user.identity!='ordinary'" @click="toAdmin" style="color:#337ab7;cursor:pointer">进入后台管理页面</a>
       </div>
   </el-col>
@@ -217,7 +218,7 @@ export default {
         this.$axios.get("/user/logoutnew").then(res=>{
             if(res.data == 'logoutnew'){
                  storage.set("user","");
-                 location. reload();
+                 location.reload();
             }
         });
     },
@@ -248,7 +249,7 @@ export default {
     toRegister() {
       this.$router.push({
             path: 'register'
-        })
+      })
     },
     getNewBooks(){
         this.$axios.get("/newBooks").then(res=>{
@@ -270,6 +271,11 @@ export default {
               keywords: this.keywords
             }
         })
+    },
+    toOrderList(){
+      this.$router.push({
+            path: 'orderList'
+      })
     }
   }
 }

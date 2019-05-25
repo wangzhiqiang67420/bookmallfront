@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import Login from '@/components/Login'
 import BookIndex from '@/components/BookIndex'
 import Register from '@/components/Register'
 import BookList from '@/components/BookList'
 import ShoppingCart from '@/components/ShoppingCart'
 import BookDetail from '@/components/BookDetail'
-import storage from '@/libs/storage'
+import CartOrder from '@/components/CartOrder'
+import OrderList from '@/components/OrderList'
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
@@ -41,6 +41,14 @@ export default new Router({
       path: '/bookDetail',
       name: 'BookDetail',
       component: BookDetail
+    },{
+      path: '/cartOrder',
+      name: 'CartOrder',
+      component: CartOrder
+    },{
+      path: '/orderList',
+      name: 'OrderList',
+      component: OrderList
     }
   ]
 })
