@@ -8,6 +8,7 @@ import ShoppingCart from '@/components/ShoppingCart'
 import BookDetail from '@/components/BookDetail'
 import CartOrder from '@/components/CartOrder'
 import OrderList from '@/components/OrderList'
+import UserInfo from '@/components/UserInfo'
 
 Vue.use(Router);
 
@@ -49,6 +50,10 @@ export default new Router({
       path: '/orderList',
       name: 'OrderList',
       component: OrderList
+    },{
+      path: '/userInfo',
+      name: 'UserInfo',
+      component: UserInfo
     }
   ]
 })
