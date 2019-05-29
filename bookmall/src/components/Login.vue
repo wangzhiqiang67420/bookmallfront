@@ -25,11 +25,11 @@
 
 <script>
 import storage from '@/libs/storage';
+import {setCookie} from '@/util'
 export default {
   name: 'Login',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
       form: {
         username: '',
         password: ''
@@ -46,6 +46,11 @@ export default {
             res.data.user.password=password;
             storage.set("user",res.data.user);
             storage.set("sessionId",res.data.sessionId);
+            let expireDays = 1000 * 60 * 60 ;
+
+            setCookie('userId',res.data.userId,expireDays); 
+            setCookie('uuid',res.data.uuid,expireDays);
+            setCookie('st',res.data.st,expireDays);
             this.$router.push({
               path: res.data.msg
             })

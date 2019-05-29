@@ -131,6 +131,7 @@
 
 <script>
 import storage from '@/libs/storage';
+import {delCookie} from '@/util';
 export default {
   name: 'Login',
   data () {
@@ -183,6 +184,9 @@ export default {
         this.$axios.get("/user/logoutnew").then(res=>{
             if(res.data == 'logoutnew'){
                  storage.set("user","");
+                 delCookie('userId');
+                 delCookie('uuid');
+                 delCookie('st');
                  this.$router.push({
                     path: '/'
                  })
