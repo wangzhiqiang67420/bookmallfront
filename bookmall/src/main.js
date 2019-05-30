@@ -23,7 +23,7 @@ axios.interceptors.request.use(
     
     config.data = JSON.stringify(config.data);
     config.headers = {
-      'Content-Type':'application/x-www-form-urlencoded', //设置跨域头部
+      'Content-Type':'application/json',
       'userId': userId,
       'uuid': uuid,
       'st': st
